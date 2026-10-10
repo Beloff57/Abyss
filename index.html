@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#03131e">
+  <meta name="description" content="ABYSS — private ocean expeditions designed to be felt.">
+
+  <title>ABYSS — Go Beyond the Surface</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="cursor" aria-hidden="true">
+    <span class="cursor-dot"></span>
+    <span class="cursor-ring"></span>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="#top" class="brand" aria-label="ABYSS home">
+      <span>ABYSS</span>
+      <small>PRIVATE OCEAN EXPEDITIONS</small>
+    </a>
+
+    <div class="header-depth" aria-live="polite">
+      <span>CURRENT DEPTH</span>
+      <strong id="headerDepth">00</strong>
+      <span>m</span>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="sound-toggle" id="soundToggle">
+        SOUND / OFF
+      </button>
+
+      <a href="#contact" class="header-cta magnetic">
+        <span>Plan a descent</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-media">
+        <img
+          src="https://images.unsplash.com/photo-1561983857-0a48c57dc564?auto=format&fit=crop&w=2400&q=88"
+          alt="Diver exploring deep blue water"
+        >
+      </div>
+
+      <div class="hero-overlay"></div>
+      <div class="hero-surface"></div>
+
+      <canvas
+  class="fish-canvas"
+  id="fishCanvas"
+  aria-hidden="true"
+></canvas>
+
+      <div class="hero-content">
+        <p class="eyebrow reveal-up">PRIVATE DEEP-SEA EXPEDITIONS</p>
+
+        <h1 class="hero-title">
+          <span class="title-line reveal-up">GO</span>
+          <span class="title-line title-serif reveal-up">BELOW.</span>
+        </h1>
+
+        <p class="hero-description reveal-up">
+          The surface is only where the experience begins.
+          Descend into another world — slowly, silently, completely.
+        </p>
+
+        <div class="hero-bottom reveal-up">
+          <div class="hero-location">
+            <span class="status-dot"></span>
+            <span>PRIVATE GROUPS / CUSTOM LOCATIONS</span>
+          </div>
+
+          <div class="scroll-prompt">
+            <span>SCROLL TO DESCEND</span>
+            <span class="scroll-line"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESCENT -->
+    <section class="descent" id="descent">
+      <div class="descent-sticky">
+        <div class="depth-bg"></div>
+        <div class="sun-glow"></div>
+
+        <div class="light-rays">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="caustics"></div>
+        <div class="pressure-haze"></div>
+
+        <div class="light-sweeps" aria-hidden="true">
+          <span class="light-sweep sweep-a"></span>
+          <span class="light-sweep sweep-b"></span>
+          <span class="light-sweep sweep-c"></span>
+        </div>
+
+        <canvas id="particles" aria-hidden="true"></canvas>
+
+        <div class="diver-layer" aria-hidden="true">
+          <img
+            src="https://images.unsplash.com/photo-1561983857-0a48c57dc564?auto=format&fit=crop&w=1800&q=86"
+            alt=""
+          >
+        </div>
+
+        <!-- DEPTH VISUALS -->
+        <div class="depth-visual visual-one">
+          <div class="visual-image"></div>
+          <span>01 / THE DESCENT</span>
+        </div>
+
+        <div class="depth-visual visual-two">
+          <div class="visual-image"></div>
+          <span>02 / SILENCE</span>
+        </div>
+
+        <div class="depth-visual visual-three">
+          <div class="visual-image"></div>
+          <span>03 / THE BLUE</span>
+        </div>
+
+        <div class="depth-visual visual-four">
+          <div class="visual-image"></div>
+          <span>04 / THE UNKNOWN</span>
+        </div>
+
+        <!-- DEPTH INDICATOR -->
+        <aside class="depth-indicator" aria-label="Current depth">
+          <div class="depth-top">
+            <span>DEPTH</span>
+            <strong id="depthNumber">00</strong>
+            <small>M</small>
+          </div>
+
+          <div class="depth-track">
+            <span class="depth-progress"></span>
+            <span class="depth-marker marker-1">05</span>
+            <span class="depth-marker marker-2">20</span>
+            <span class="depth-marker marker-3">40</span>
+            <span class="depth-marker marker-4">60</span>
+          </div>
+
+          <div class="depth-bottom">
+            <span>SURFACE</span>
+            <span>60M</span>
+          </div>
+        </aside>
+
+        <!-- TECH HUD -->
+        <div class="descent-hud">
+          <div class="hud-item">
+            <span>PRESSURE</span>
+            <strong id="hudPressure">1.0</strong>
+            <small>BAR</small>
+          </div>
+
+          <div class="hud-item">
+            <span>VISIBILITY</span>
+            <strong id="hudVisibility">30</strong>
+            <small>M</small>
+          </div>
+
+          <div class="hud-item">
+            <span>WATER</span>
+            <strong id="hudTemp">27</strong>
+            <small>°C</small>
+          </div>
+        </div>
+
+        <div class="descent-signal">
+          <span class="signal-line"></span>
+          <span id="depthSignal">SUNLIGHT / 0–10M</span>
+        </div>
+
+        <div class="abyss-status">
+          <span class="status-pulse"></span>
+          <span id="abyssStatusText">DESCENT ACTIVE</span>
+        </div>
+
+        <!-- DESCENT STORY -->
+        <div class="descent-copy">
+          <div class="descent-panel is-active">
+            <p class="section-index">01 / 04</p>
+            <h2>Leave the<br><em>surface.</em></h2>
+            <p>
+              The noise disappears first.
+              The world begins to slow down.
+              Every breath becomes part of the rhythm.
+            </p>
+            <span class="panel-depth">05 METRES</span>
+          </div>
+
+          <div class="descent-panel">
+            <p class="section-index">02 / 04</p>
+            <h2>Find the<br><em>silence.</em></h2>
+            <p>
+              At twenty metres, daylight starts
+              to feel distant. There is nothing left
+              but the water, your breathing and
+              the people beside you.
+            </p>
+            <span class="panel-depth">20 METRES</span>
+          </div>
+
+          <div class="descent-panel">
+            <p class="section-index">03 / 04</p>
+            <h2>Enter the<br><em>blue.</em></h2>
+            <p>
+              Colours disappear.
+              Space becomes enormous.
+              You stop observing the ocean
+              and become part of it.
+            </p>
+            <span class="panel-depth">40 METRES</span>
+          </div>
+
+          <div class="descent-panel">
+            <p class="section-index">04 / 04</p>
+            <h2>Touch the<br><em>unknown.</em></h2>
+            <p>
+              Past the familiar, the ocean becomes
+              darker, colder and quieter — reserved
+              for those willing to go further.
+            </p>
+            <span class="panel-depth">60 METRES</span>
+          </div>
+        </div>
+
+        <div class="return-phrase" aria-hidden="true">
+          <span>TIME TO RETURN</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATEMENT -->
+    <section class="statement section-dark">
+      <div class="statement-number">01</div>
+
+      <div class="statement-main">
+        <p class="eyebrow">THE EXPERIENCE</p>
+        <h2>
+          You don't
+          <span>watch.</span>
+          <br>
+          You descend.
+        </h2>
+      </div>
+
+      <div class="statement-meta">
+        <p>
+          ABYSS creates private diving experiences
+          for people who want more than a photograph
+          from the surface.
+        </p>
+
+        <a href="#experiences" class="text-link">
+          Explore the experiences
+          <span>↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- EXPERIENCES -->
+    <section class="experiences section-dark" id="experiences">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">WHAT AWAITS BELOW</p>
+          <h2>Three ways<br>to go <em>deeper.</em></h2>
+        </div>
+
+        <p class="section-intro">
+          Every expedition is built around one simple idea:
+          the less the surface gives you, the more the ocean reveals.
+        </p>
+      </div>
+
+      <div class="experience-list">
+        <article class="experience-item">
+          <div class="experience-index">01</div>
+
+          <div class="experience-content">
+            <div class="experience-image">
+              <img
+                src="https://images.unsplash.com/photo-1758968563782-186a64de4afc?auto=format&fit=crop&w=1600&q=86"
+                alt="Scuba diver exploring the blue"
+              >
+            </div>
+
+            <div class="experience-copy">
+              <span>INTRODUCTION / 12–20M</span>
+              <h3>First <em>Descent</em></h3>
+              <p>
+                Your first taste of the deep.
+                Calm water, cinematic visibility
+                and a private guide beside you
+                from first breath to first ascent.
+              </p>
+
+              <a href="#contact" class="circle-link magnetic">
+                <span>EXPLORE</span>
+                <strong>↗</strong>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="experience-item reverse">
+          <div class="experience-index">02</div>
+
+          <div class="experience-content">
+            <div class="experience-image">
+              <img
+                src="https://images.unsplash.com/photo-1682687982167-d7fb3ed8541d?auto=format&fit=crop&w=1600&q=86"
+                alt="Diver exploring an underwater cavern"
+              >
+            </div>
+
+            <div class="experience-copy">
+              <span>EXPLORATION / 25–40M</span>
+              <h3>Blue <em>Silence</em></h3>
+              <p>
+                Reef walls, caves, darkness and
+                a completely different sense of scale.
+                This is where diving stops feeling
+                like sport and starts feeling like exploration.
+              </p>
+
+              <a href="#contact" class="circle-link magnetic">
+                <span>EXPLORE</span>
+                <strong>↗</strong>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="experience-item">
+          <div class="experience-index">03</div>
+
+          <div class="experience-content">
+            <div class="experience-image abstract-ocean">
+              <div class="abstract-core"></div>
+              <div class="abstract-ring"></div>
+            </div>
+
+            <div class="experience-copy">
+              <span>PRIVATE / CUSTOM DEPTH</span>
+              <h3>Beyond <em>Light</em></h3>
+              <p>
+                A completely private expedition
+                planned around your experience level,
+                location and appetite for the unknown.
+              </p>
+
+              <a href="#contact" class="circle-link magnetic">
+                <span>EXPLORE</span>
+                <strong>↗</strong>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- RISK -->
+    <section class="risk">
+      <div class="risk-image">
+        <img
+          src="https://images.unsplash.com/photo-1496161341410-90ce6ad8b390?auto=format&fit=crop&w=2200&q=86"
+          alt="Diver beneath the ocean surface"
+        >
+      </div>
+
+      <div class="risk-overlay"></div>
+
+      <div class="risk-content">
+        <p class="eyebrow">RESPECT THE DEPTH</p>
+
+        <h2>
+          The ocean
+          <em>doesn't</em>
+          pretend.
+        </h2>
+
+        <p class="risk-copy">
+          Pressure increases.
+          Visibility changes.
+          Your attention becomes sharper.
+          Every expedition is built around safety,
+          control and respect for the environment.
+        </p>
+
+        <div class="risk-stats">
+          <div>
+            <strong>01</strong>
+            <span>PRIVATE GUIDE</span>
+          </div>
+
+          <div>
+            <strong>02</strong>
+            <span>FULL BRIEFING</span>
+          </div>
+
+          <div>
+            <strong>03</strong>
+            <span>CONTROLLED ASCENT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section class="philosophy section-dark">
+      <div class="philosophy-top">
+        <p class="eyebrow">WHY ABYSS</p>
+        <span>SCROLL / KEEP GOING</span>
+      </div>
+
+      <div class="philosophy-copy">
+        <p>Most experiences are designed to be remembered.</p>
+        <h2>Ours are designed<br>to be <em>felt.</em></h2>
+      </div>
+
+      <div class="philosophy-bottom">
+        <p>
+          Weightlessness. Silence. Pressure.
+          Cold water against your gloves.
+          A beam of light moving through darkness.
+        </p>
+
+        <p>
+          These are not features on a brochure.
+          They are the reason you came.
+        </p>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="contact" id="contact">
+      <div class="contact-mist" aria-hidden="true"></div>
+
+      <div class="contact-top">
+        <div class="brand">
+          <span>ABYSS</span>
+          <small>PRIVATE OCEAN EXPEDITIONS</small>
+        </div>
+
+        <p class="eyebrow">READY TO DESCEND?</p>
+      </div>
+
+      <div class="contact-center">
+        <p class="contact-kicker">THERE IS A WORLD BELOW YOU.</p>
+        <h2>Go see it <em>yourself.</em></h2>
+
+        <div class="contact-meta">
+          <div>
+            <span>PRIVATE EXPEDITIONS</span>
+            <strong>12–60M</strong>
+          </div>
+
+          <div>
+            <span>GROUP SIZE</span>
+            <strong>2–6 GUESTS</strong>
+          </div>
+
+          <div>
+            <span>FORMAT</span>
+            <strong>FULLY GUIDED</strong>
+          </div>
+        </div>
+
+        <a href="mailto:hello@abyss-experience.com" class="contact-button magnetic">
+          <span>Start your expedition</span>
+          <strong>↗</strong>
+        </a>
+      </div>
+
+      <div class="contact-footer">
+        <span>PRIVATE DIVING / CUSTOM EXPEDITIONS</span>
+        <a href="mailto:hello@abyss-experience.com">hello@abyss-experience.com</a>
+        <span>© ABYSS</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-brand">ABYSS</div>
+
+    <div class="footer-credit">
+      <span>DESIGNED &amp; DEVELOPED BY</span>
+      <strong>BELOFF STUDIO</strong>
+    </div>
+
+    <div class="fish-model-credit">
+  3D FISH:
+  <a
+    href="https://sketchfab.com/3d-models/betta-splendens-f4eeb7f50ad24873842bd954ad27d23b"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    BETTA SPLENDENS BY BLUEMESH
+  </a>
+  · CC BY 4.0
+</div>
+
+    <div class="footer-year">2026</div>
+  </footer>
+
+  <!-- LIBRARIES -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
